@@ -10,3 +10,11 @@ class BbAdmin(admin.ModelAdmin):
 
 admin.site.register(Rubric)
 admin.site.register(Bb, BbAdmin)
+
+from django.contrib import admin
+from .models import Kiosk, IceCream, Parent, Child
+
+admin.site.register(Kiosk)
+admin.site.register(IceCream)
+admin.site.register(Parent)
+admin.site.register(Child)
