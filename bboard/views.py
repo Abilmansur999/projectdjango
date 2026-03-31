@@ -1,26 +1,15 @@
-from django.views import View
-from django.http import HttpResponse
-from django.contrib.auth.models import User
 from django.shortcuts import render
+from .models import Task
 
 
-class UsersListView(View):
-    def get(self, request):
-        users = User.objects.all()
-        result = ""
-        for user in users:
-            result += f"{user.id}. {user.username}<br>"
-        return HttpResponse(result)
+def index(request):
+    return render(request, 'index.html')
 
 
-class UserDetailView(View):
-    def get(self, request):
-        return render(request, 'user_form.html')
+def tasks_page(request):
+    tasks = Task.objects.all()
+    return render(request, 'tasks.html', {'tasks': tasks})
 
-    def post(self, request):
-        user_id = request.POST.get('user_id')
-        try:
-            user = User.objects.get(id=user_id)
-            return HttpResponse(f"{user.username} - {user.email}")
-        except User.DoesNotExist:
-            return HttpResponse("User not found")
+
+def about(request):
+    return render(request, 'about.html', {'text': "Очень длинный текст для примера"})
