@@ -1,36 +1,26 @@
+from django.views import View
 from django.http import HttpResponse
-from .models import Task
+from django.contrib.auth.models import User
+from django.shortcuts import render
 
 
-def get_all_tasks(request):
-    tasks = Task.objects.all()
-    result = ""
-    for task in tasks:
-        result += f"{task.id}. {task.title} - {task.completed}<br>"
-    return HttpResponse(result)
+class UsersListView(View):
+    def get(self, request):
+        users = User.objects.all()
+        result = ""
+        for user in users:
+            result += f"{user.id}. {user.username}<br>"
+        return HttpResponse(result)
 
 
-def get_task(request, id):
-    try:
-        task = Task.objects.get(id=id)
-        return HttpResponse(f"{task.title} - {task.description} - {task.completed}")
-    except Task.DoesNotExist:
-        return HttpResponse("Task not found")
+class UserDetailView(View):
+    def get(self, request):
+        return render(request, 'user_form.html')
 
-
-def create_task(request):
-    Task.objects.create(
-        title="Новая задача",
-        description="Описание",
-        completed=False
-    )
-    return HttpResponse("Task created")
-
-
-def delete_task(request, id):
-    try:
-        task = Task.objects.get(id=id)
-        task.delete()
-        return HttpResponse("Task deleted")
-    except Task.DoesNotExist:
-        return HttpResponse("Task not found")
+    def post(self, request):
+        user_id = request.POST.get('user_id')
+        try:
+            user = User.objects.get(id=user_id)
+            return HttpResponse(f"{user.username} - {user.email}")
+        except User.DoesNotExist:
+            return HttpResponse("User not found")
