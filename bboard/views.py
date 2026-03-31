@@ -1,28 +1,36 @@
 from django.http import HttpResponse
+from .models import Task
 
-def index(request):
-    return HttpResponse("Главная")
 
-def task_list(request):
-    return HttpResponse("Список задач")
+def get_all_tasks(request):
+    tasks = Task.objects.all()
+    result = ""
+    for task in tasks:
+        result += f"{task.id}. {task.title} - {task.completed}<br>"
+    return HttpResponse(result)
 
-def task_detail(request, id):
-    return HttpResponse(f"Задача {id}")
 
-def task_create(request):
-    return HttpResponse("Создать задачу")
+def get_task(request, id):
+    try:
+        task = Task.objects.get(id=id)
+        return HttpResponse(f"{task.title} - {task.description} - {task.completed}")
+    except Task.DoesNotExist:
+        return HttpResponse("Task not found")
 
-def task_edit(request, id):
-    return HttpResponse(f"Редактировать {id}")
 
-def task_delete(request, id):
-    return HttpResponse(f"Удалить {id}")
+def create_task(request):
+    Task.objects.create(
+        title="Новая задача",
+        description="Описание",
+        completed=False
+    )
+    return HttpResponse("Task created")
 
-def task_complete(request, id):
-    return HttpResponse(f"Завершить {id}")
 
-def completed_tasks(request):
-    return HttpResponse("Выполненные задачи")
-
-def pending_tasks(request):
-    return HttpResponse("Невыполненные задачи")
+def delete_task(request, id):
+    try:
+        task = Task.objects.get(id=id)
+        task.delete()
+        return HttpResponse("Task deleted")
+    except Task.DoesNotExist:
+        return HttpResponse("Task not found")
