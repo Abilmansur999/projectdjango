@@ -1,16 +1,27 @@
 {% extends 'base.html' %}
 
-{% block title %}Tasks{% endblock %}
-
 {% block content %}
-<h1>Tasks Page</h1>
+
+<h1>Tasks</h1>
 
 <ul>
-    {% for task in tasks %}
-        <li>
-            {{ task.title|upper }} - {{ task.description|lower }}
-        </li>
+    {% for task in page_obj %}
+        <li>{{ task.title }}</li>
     {% endfor %}
 </ul>
+
+<div>
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    <span>
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+    {% endif %}
+</div>
 
 {% endblock %}
